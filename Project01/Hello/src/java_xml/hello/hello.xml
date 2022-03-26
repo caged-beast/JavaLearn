@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--注解：-->
+<student>
+    <info>
+        <age>30</age>
+        <sql>
+            select * from user where age &lt; 30;
+        </sql>
+    </info>
+</student>

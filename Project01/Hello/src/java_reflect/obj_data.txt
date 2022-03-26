@@ -1,0 +1,8 @@
+
+===============Student================
+private java.lang.String java_reflect.Student.name=========>Joey
+private int java_reflect.Student.age=========>22
+===============Teacher================
+private java.lang.String java_reflect.Teacher.name=========>Ross
+private int java_reflect.Teacher.age=========>33
+private double java_reflect.Teacher.salary=========>10000.0
