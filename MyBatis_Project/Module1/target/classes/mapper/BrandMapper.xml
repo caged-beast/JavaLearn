@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace要唯一-->
+<!--<mapper namespace="mapper.BrandMapper">-->
+<!--    <select id="selectAll" resultType="pojo.Brand">-->
+<!--        select * from tb_brand;-->
+<!--    </select>-->
+<!--</mapper>-->
+
+<!--使用resultMap-->
+<mapper namespace="mapper.BrandMapper">
+    <!--    id是指当前映射的唯一标识，type是指对应的java类型，这是是mapper.BrandMapper的别名brand-->
+    <resultMap id="brandResultMap" type="brand">
+        <!--        映射一般字段用result标签，映射主键用id字段-->
+        <result column="brand_name" property="brandName"/>
+        <result column="company_name" property="companyName"/>
+    </resultMap>
+
+    <!--    原来的resultType="pojo.Brand"要换成resultMap="brandResultMap"-->
+    <select id="selectAll" resultMap="brandResultMap">
+        select *
+        from tb_brand;
+    </select>
+
+    <!--    有两种参数占位符：-->
+    <!--    1.#{}:执行sql时，会将#{}占位符替换为?，将来自动设置参数值-->
+    <!--    2.${}:拼sql，会存在sql注入问题-->
+    <!--         查询语句中<等字符可能会有歧义，有两种处理方法，一种是用转义字符，另一种是用CDATA区-->
+    <select id="selectById" resultMap="brandResultMap">
+        <!--         select * from tb_brand where id &lt; #{id};-->
+        select * from tb_brand where id
+        <![CDATA[
+            <
+        ]]>
+        #{id};
+    </select>
+
+    <!--    多条件查询-->
+    <!--    <select id="selectByCondition" resultMap="brandResultMap">-->
+    <!--        select * from tb_brand-->
+    <!--        where status = #{status}-->
+    <!--          and company_name like #{companyName}-->
+    <!--          and brand_name like #{brandName};-->
+    <!--    </select>-->
+
+
+    <!--        多条件查询，使用了动态sql-->
+    <select id="selectByCondition" resultMap="brandResultMap">
+        select * from tb_brand
+        <!-- 用官方的<where>标签替换sql查询中的where可以解决多条件的动态查询时sql语句拼接语法错误问题 -->
+        <where>
+            <if test="status!=null">
+                status = #{status}
+            </if>
+            <if test="companyName!=null and companyName!=''">
+                and company_name like #{companyName}
+            </if>
+            <if test="brandName!=null and brandName!=''">
+                and brand_name like #{brandName};
+            </if>
+        </where>
+    </select>
+
+    <!--        单条件查询，使用了动态sql-->
+    <select id="selectBySingleCondition" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        <where>
+            <choose><!-- 相当于switch语句-->
+                <when test="status!=null">
+                    status = #{status}
+                </when>
+                <when test="companyName!=null and companyName!=''">
+                    and company_name like #{companyName}
+                </when>
+                <when test="brandName!=null and brandName!=''">
+                    and brand_name like #{brandName};
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!--    想要返回添加数据的主键值需要设置useGeneratedKeys和keyProperty-->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_brand(brand_name, company_name, ordered, description, status)
+        values (#{brandName}, #{companyName}, #{ordered}, #{description}, #{status});
+    </insert>
+
+    <!--    修改全部字段-->
+    <update id="updateAll">
+        update tb_brand
+        set brand_name   = #{brandName},
+            company_name = #{companyName},
+            description  = #{description},
+            ordered      = #{ordered},
+            status       = #{status}
+        where id = #{id};
+    </update>
+
+    <!--    修改部分字段，动态sql-->
+    <update id="updateSingle">
+        update tb_brand
+        <set>
+            <if test="companyName!=null and companyName!=''">
+                company_name = #{companyName},
+            </if>
+            <if test="brandName!=null and brandName!=''">
+                brand_name = #{brandName},
+            </if>
+            <if test="description!=null and description!=''">
+                description = #{description},
+            </if>
+            <if test="ordered!=null">
+                ordered = #{ordered},
+            </if>
+            <if test="status!=null">
+                status = #{status}
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+
+<!--    删除单条数据-->
+    <delete id="deleteById">
+        delete from tb_brand where id = #{id};
+    </delete>
+
+    <!--    删除多条数据-->
+<!--    mybatis会将数组参数封装成一个Map集合，默认是：array=数组，可以使用@Param注解改变默认的key的名称-->
+    <delete id="deleteByIds">
+        delete from tb_brand where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

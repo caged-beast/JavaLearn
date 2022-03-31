@@ -62,6 +62,7 @@ Eclipse中有工作空间workspace和项目project的概念，可以在一个工
 12. 查看源码：Ctrl+鼠标左键
 13. 根据值快速生成变量：Ctrl+Alt+V
 14. 快速生成try/catch：Ctrl+Alt+T
+15. 整列编辑：Alt+鼠标左键
 
 #### 4.设置
 
@@ -76,7 +77,7 @@ Eclipse中有工作空间workspace和项目project的概念，可以在一个工
 1. 在maven中心仓库下载相关jar包，包括logback-classic、logback-core、slf4j-api
 2. 在项目下新建一个directory，取名lib（习惯），把相关jar包粘贴到该文件夹下
 3. 添加到依赖库：选中这些jar包->右键->add as library
-4. 将Logback的核心配置文件logback.xml直接拷贝到src目录下
+4. 将Logback的核心配置文件logback.xml直接拷贝到src目录下，下面给出一个配置文件供参考
 5. 在代码中获取日志对象: `public static final Logger LOGGER = LoggerFactory.getLogger("类对象");`
 6. 使用日志对象输入日志信息
 
